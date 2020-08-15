@@ -32,14 +32,13 @@ export default class CommandService {
         Log.info(`Loaded: ${this.commands.size} commands`, `cmds`);
     }
 
-    async handle(msg: Message) {
+    async handle(msg: Message, prefix: string) {
         if (!(msg.member && msg.content && msg.guild && !msg.author.bot)) return;
 
-        return this.handleCommand(msg);
+        return this.handleCommand(msg, prefix);
     }
-    private async handleCommand(msg: Message) {
+    private async handleCommand(msg: Message, prefix: string) {
         try {
-            const prefix = '.d';
             const slicedContent = msg.content.slice(prefix.length);
 
             const command = this.findCommand(slicedContent);

@@ -4,6 +4,7 @@ import Users from '../../../data/users';
 import Deps from '../../../utils/deps';
 import { sendError } from '../../modules/api-utils';
 import { getUser } from '../user-routes';
+import { bot } from '../../../bot';
 
 export const router = Router({ mergeParams: true });
 
@@ -37,7 +38,8 @@ router.get('/add-badge/:name', async (req, res) => {
     if (!exists)
       throw new TypeError('Server does not exist.');
     
-    const savedGuild = await guilds.get(req.params.id);
+    const guild = bot.guilds.cache.get(req.params.id);
+    const savedGuild = await guilds.get(guild);
     savedGuild.badges.push(req.params.name);
     await savedGuild.save();
     

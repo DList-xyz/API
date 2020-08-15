@@ -7,6 +7,7 @@ import { Listing } from '../../../data/models/guild';
 import AuditLogger from '../../modules/audit-logger';
 import { validateServerManager } from './guilds-routes';
 import { sendError } from '../../modules/api-utils';
+import { bot } from '../../../bot';
 
 export const router = Router();
 
@@ -21,7 +22,8 @@ router.post('/', async (req, res) => {
     const id = listing.id;
     await validateCanCreate(req, id);
 
-    const savedGuild = await guilds.get(id);
+    const guild = bot.guilds.cache.get(req.params.id);
+    const savedGuild = await guilds.get(guild);
     savedGuild.listing = listing;
     savedGuild.ownerId = authUser.id;
     await savedGuild.save();
@@ -53,7 +55,8 @@ router.delete('/:id([0-9]{18})', async (req, res) => {
 
     await validateServerManager(key, id);
 
-    await guilds.delete(req.params.id);
+    const guild = bot.guilds.cache.get(req.params.id);
+    await guilds.delete(guild);
 
     res.json({ success: true });
   } catch (error) { sendError(res, 400, error); }

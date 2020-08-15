@@ -26,10 +26,7 @@ router.get('/', async (req, res) => {
             const guild = bot.guilds.cache.get(savedGuild.id);
             if (!guild) continue;
 
-            guilds.push({
-                ...guild,
-                iconURL: guild.iconURL({ dynamic: true, size: 256 })
-            });
+            guilds.push(guild);
         }
         res.json({ saved: savedGuilds, guilds });
     } catch (error) { sendError(res, 400, error); }
@@ -57,7 +54,8 @@ router.delete('/:id', async (req, res) => {
         const id = req.params.id;
         await validateServerManager(req.query.key, id);
 
-        await guilds.delete(id);
+        const guild = bot.guilds.cache.get(id);
+        await guilds.delete(guild);
 
         res.json({ success: true });
     } catch (error) { sendError(res, 400, error); }
@@ -73,7 +71,8 @@ router.get('/:id/vote', async (req, res) => {
         savedVoter.lastVotedAt = new Date();
         await savedVoter.save();
 
-        const savedGuild = await guilds.get(req.params.id);
+        const guild = bot.guilds.cache.get(req.params.id);
+        const savedGuild = await guilds.get(guild);
         savedGuild.votes.push({ at: new Date(), by: voter.id });
         savedGuild.totalVotes++;
         savedGuild.lastVoteAt = new Date();
@@ -85,7 +84,8 @@ router.get('/:id/vote', async (req, res) => {
 
 router.get('/:id/saved', async (req, res) => {
     try {
-        const savedGuild = await guilds.get(req.params.id);
+        const guild = bot.guilds.cache.get(req.params.id);
+        const savedGuild = await guilds.get(guild);
         res.json(savedGuild);
     } catch (error) { sendError(res, 400, error); }
 });
@@ -93,7 +93,7 @@ router.get('/:id/saved', async (req, res) => {
 router.get('/:id/widget', async (req, res) => {
     try {
         const guild = bot.guilds.cache.get(req.params.id);
-        const savedGuild = await guilds.get(req.params.id);
+        const savedGuild = await guilds.get(guild);
         const image = await new ServerWidgetGenerator(guild, savedGuild)
             .generate(req.query.size?.toString() ?? 'large');
         
@@ -139,8 +139,4 @@ export async function validateServerManager(key: any, botId: string) {
     const bots = await getManagableBots(key);
     if (!bots.some(b => b.id === botId))
         throw TypeError('Bot not manageable.');
-}
-
-export interface BotStats {
-    guildCount: number;
 }

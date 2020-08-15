@@ -5,12 +5,12 @@ export interface Flag {
     reason: string;
 }
 
-export interface Listing {
-    id: string;
-    body: string;
+export class Listing {
+    id = '';
+    body = 'A server that has not yet been edited.';
     language: string;
-    overview: string;
-    tags: string[];
+    overview = 'No description set.';
+    tags = [];
 }
 
 export interface Vote {
@@ -23,7 +23,7 @@ const guildSchema = new Schema({
     badges: { type: Array, default: [] },
     invite: String,
     flags: { type: Array, default: [] },
-    listing: Object,
+    listing: { type: Object, default: new Listing() },
     ownerId: String,
     totalVotes: { type: Number, default: 0 },
     lastBumpAt: Date,

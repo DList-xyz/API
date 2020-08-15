@@ -12,13 +12,13 @@ export default class InviteCommand implements Command {
     constructor(private guilds = Deps.get<Guilds>(Guilds)) {}
     
     execute = async (ctx: CommandContext) => {
-        const savedGuild = await this.guilds.get(ctx.guild.id);
+        const savedGuild = await this.guilds.get(ctx.guild);
         savedGuild.lastBumpAt = new Date();
         await savedGuild.save();
 
         const newInvite = await ctx.channel
             .createInvite({ temporary: false, reason: 'Invite command executed.' });
 
-        return ctx.channel.send(`✔ Invite updated to \`${newInvite.code}\`!`);
+        return ctx.channel.send(`☑ Invite updated to \`${newInvite.code}\`!`);
     }
 }
