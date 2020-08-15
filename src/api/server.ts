@@ -10,10 +10,10 @@ import Deps from '../utils/deps';
 import Stats from './modules/stats';
 
 import { router as apiRoutes } from './routes/api-routes';
-import { router as serversRoutes } from './routes/servers/servers-routes';
-import { router as manageBotRoutes } from './routes/servers/manage-server-routes';
-import { router as reviewerRoutes } from './routes/servers/reviewer-routes';
-import { router as statsRoutes } from './routes/servers/stats-routes';
+import { router as guildsRoutes } from './routes/guilds/guilds-routes';
+import { router as manageBotRoutes } from './routes/guilds/manage-guilds-routes';
+import { router as reviewerRoutes } from './routes/guilds/reviewer-routes';
+import { router as statsRoutes } from './routes/guilds/stats-routes';
 import { router as userRoutes } from './routes/user-routes';
 
 export const app = express(),
@@ -29,8 +29,8 @@ export class API {
         app.use(bodyParser.json());
 
         app.use('/api/user', userRoutes);
-        app.use('/api/servers', serversRoutes, manageBotRoutes);
-        app.use('/api/servers/:id', reviewerRoutes, statsRoutes);
+        app.use('/api/guilds', guildsRoutes, manageBotRoutes);
+        app.use('/api/guilds/:id', reviewerRoutes, statsRoutes);
         app.use('/api', apiRoutes);
 
         app.get('/server', (req, res) => res.redirect(`https://discord.gg/${config.api.supportInvite}`));

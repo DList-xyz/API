@@ -1,7 +1,7 @@
 import config from '../../config.json';
 import Deps from '../../src/utils/deps';
 import Bots from '../../src/data/bots';
-import { API, app } from '../../src/api/server';
+import { API, app } from '../../src/api/guild';
 import request from 'supertest';
 import { Listing } from '../../src/data/models/bot';
 
@@ -11,7 +11,7 @@ describe('routes/api/bots', () => {
 
     before(() => {
         Deps.get<API>(API);
-        servers = Deps.get<Bots>(Bots);
+        guilds = Deps.get<Bots>(Bots);
 
         bots.get(config.tests.botId);
     });

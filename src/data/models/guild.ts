@@ -5,7 +5,7 @@ export interface Flag {
     reason: string;
 }
 
-export class Listing {
+export interface Listing {
     id: string;
     body: string;
     language: string;
@@ -18,7 +18,7 @@ export interface Vote {
     by: string;
 }
 
-const serverSchema = new Schema({
+const guildSchema = new Schema({
     _id: String,
     badges: { type: Array, default: [] },
     invite: String,
@@ -26,11 +26,12 @@ const serverSchema = new Schema({
     listing: Object,
     ownerId: String,
     totalVotes: { type: Number, default: 0 },
+    lastBumpAt: Date,
     lastVoteAt: Date,
     votes: { type: Array, default: [] }
 });
 
-export interface ServerDocument extends Document {
+export interface GuildDocument extends Document {
     _id: string;
     badges: string[];
     invite: string;
@@ -38,8 +39,9 @@ export interface ServerDocument extends Document {
     listing: Listing;
     ownerId: string;
     totalVotes: number;
+    lastBumpAt: Date;
     lastVoteAt: Date;
     votes: Vote[];
 }
 
-export const SavedServer = model<ServerDocument>('server', serverSchema);
+export const SavedGuild = model<GuildDocument>('guild', guildSchema);

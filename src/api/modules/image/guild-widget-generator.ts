@@ -1,7 +1,7 @@
 import ImageGenerator from './image-generator';
 import { createCanvas, loadImage, CanvasRenderingContext2D, Canvas } from 'canvas';
 import { User, Guild } from 'discord.js';
-import { ServerDocument } from '../../../data/models/server';
+import { GuildDocument } from '../../../data/models/guild';
 
 export class ServerWidgetGenerator extends ImageGenerator {
     colors = {
@@ -14,7 +14,7 @@ export class ServerWidgetGenerator extends ImageGenerator {
 
     constructor(
         private guild: Guild,
-        private savedServer: ServerDocument) { super(); }
+        private savedGuild: GuildDocument) { super(); }
 
     async generate(size = 'large') {
         if (size === 'medium')
@@ -81,14 +81,14 @@ export class ServerWidgetGenerator extends ImageGenerator {
         
         ctx.font = 'bold 16px Arial, sans-serif';
         ctx.fillStyle = 'white';
-        ctx.fillText(this.savedServer.votes.length.toString(),
+        ctx.fillText(this.savedGuild.votes.length.toString(),
             pos.x + 50, pos.y + 16.5);
     }
 
     private addGuildOverview(ctx: CanvasRenderingContext2D, canvas) {
         ctx.font = '16px Arial, sans-serif';
         ctx.fillStyle = 'gray';
-        super.wrapText(ctx, this.savedServer.listing.overview,
+        super.wrapText(ctx, this.savedGuild.listing.overview,
             25, canvas.height / 2, canvas.width - 50, 20);
     }
 

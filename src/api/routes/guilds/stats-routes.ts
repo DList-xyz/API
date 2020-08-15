@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import Deps from '../../../utils/deps';
-import BotLogs from '../../../data/server-logs';
+import BotLogs from '../../../data/guild-logs';
 import { sendError } from '../../modules/api-utils';
-import { validateServerManager } from './servers-routes';
+import { validateServerManager } from './guilds-routes';
 
 export const router = Router({ mergeParams: true });
 

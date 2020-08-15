@@ -1,29 +1,29 @@
 import { Router } from 'express';
 import { bot } from '../../../bot';
-import Servers from '../../../data/servers';
-import { SavedServer } from '../../../data/models/server';
+import Guilds from '../../../data/guilds';
+import { SavedGuild } from '../../../data/models/guild';
 import { UserDocument } from '../../../data/models/user';
 import Users from '../../../data/users';
 import Deps from '../../../utils/deps';
 import { sendError } from '../../modules/api-utils';
-import { ServerWidgetGenerator as ServerWidgetGenerator } from '../../modules/image/server-widget-generator';
+import { ServerWidgetGenerator } from '../../modules/image/guild-widget-generator';
 import Stats from '../../modules/stats';
 import { AuthClient } from '../../server';
 import { getUser } from '../user-routes';
 
 export const router = Router();
 
-const servers = Deps.get<Servers>(Servers),
+const guilds = Deps.get<Guilds>(Guilds),
       stats = Deps.get<Stats>(Stats),
       users = Deps.get<Users>(Users);
 
 router.get('/', async (req, res) => {
     try {
         const guilds = [];
-        const savedServers = await SavedServer.find();
+        const savedGuilds = await SavedGuild.find();
 
-        for (const savedServer of savedServers) {
-            const guild = bot.guilds.cache.get(savedServer.id);
+        for (const savedGuild of savedGuilds) {
+            const guild = bot.guilds.cache.get(savedGuild.id);
             if (!guild) continue;
 
             guilds.push({
@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
                 iconURL: guild.iconURL({ dynamic: true, size: 256 })
             });
         }
-        res.json({ saved: savedServers, guilds });
+        res.json({ saved: savedGuilds, guilds });
     } catch (error) { sendError(res, 400, error); }
 });
 
@@ -57,16 +57,14 @@ router.delete('/:id', async (req, res) => {
         const id = req.params.id;
         await validateServerManager(req.query.key, id);
 
-        await servers.delete(id);
+        await guilds.delete(id);
 
         res.json({ success: true });
     } catch (error) { sendError(res, 400, error); }
 });
 
 router.get('/:id/vote', async (req, res) => {
-    try {
-        const id = req.params.id;
-        
+    try {        
         const voter = await getUser(req.query.key);
         const savedVoter = await users.get(voter);
 
@@ -75,11 +73,11 @@ router.get('/:id/vote', async (req, res) => {
         savedVoter.lastVotedAt = new Date();
         await savedVoter.save();
 
-        const savedServer = await servers.get(id);
-        savedServer.votes.push({ at: new Date(), by: voter.id });
-        savedServer.totalVotes++;
-        savedServer.lastVoteAt = new Date();
-        await savedServer.save();
+        const savedGuild = await guilds.get(req.params.id);
+        savedGuild.votes.push({ at: new Date(), by: voter.id });
+        savedGuild.totalVotes++;
+        savedGuild.lastVoteAt = new Date();
+        await savedGuild.save();
 
         res.json({ success: true });        
     } catch (error) { sendError(res, 400, error); }
@@ -87,16 +85,16 @@ router.get('/:id/vote', async (req, res) => {
 
 router.get('/:id/saved', async (req, res) => {
     try {
-        const savedServer = await servers.get(req.params.id);
-        res.json(savedServer);
+        const savedGuild = await guilds.get(req.params.id);
+        res.json(savedGuild);
     } catch (error) { sendError(res, 400, error); }
 });
 
 router.get('/:id/widget', async (req, res) => {
     try {
         const guild = bot.guilds.cache.get(req.params.id);
-        const savedServer = await servers.get(req.params.id);
-        const image = await new ServerWidgetGenerator(guild, savedServer)
+        const savedGuild = await guilds.get(req.params.id);
+        const image = await new ServerWidgetGenerator(guild, savedGuild)
             .generate(req.query.size?.toString() ?? 'large');
         
         res.set({ 'Content-Type': 'image/png' }).send(image);
@@ -128,8 +126,8 @@ async function getManagableBots(key: any) {
     const { id } = await AuthClient.getUser(key);
     const owner = bot.users.cache.get(id);
 
-    const savedServers = await servers.getManageable(owner);
-    const ids = savedServers.map(b => b._id);
+    const savedGuilds = await guilds.getManageable(owner);
+    const ids = savedGuilds.map(b => b._id);
 
     return bot.users.cache.filter(u => ids.includes(u.id));
 }
