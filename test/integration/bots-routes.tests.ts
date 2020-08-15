@@ -11,7 +11,7 @@ describe('routes/api/bots', () => {
 
     before(() => {
         Deps.get<API>(API);
-        bots = Deps.get<Bots>(Bots);
+        servers = Deps.get<Bots>(Bots);
 
         bots.get(config.tests.botId);
     });

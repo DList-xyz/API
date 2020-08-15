@@ -1,34 +1,35 @@
 import Deps from '../../utils/deps';
-import Bots from '../../data/bots';
-import { BotDocument } from '../../data/models/bot';
+import Servers from '../../data/servers';
+import { ServerDocument } from '../../data/models/server';
+import { bot } from '../../bot';
 
 const distinct = (v, i, a) => a.indexOf(v) === i;
 
 export default class Stats {
-  private savedBots: BotDocument[] = [];
+  private savedServers: ServerDocument[] = [];
 
   general(id: string): GeneralStats {
-    const savedBot = this.savedBots.find(b => b.id === id);
-    if (!savedBot)
+    const guild = bot.guilds.cache.get(id);
+    const savedServer = this.savedServers.find(b => b.id === id);
+    if (!savedServer || !guild)
       return null;
     
     return {
-      approvedAt: savedBot.approvedAt,
-      guildCount: savedBot.stats.guildCount,
-      lastVoteAt: savedBot.lastVoteAt,
-      totalVotes: savedBot.totalVotes,
-      voteCount: savedBot.votes.length
+      memberCount: guild.members.cache.size,
+      lastVoteAt: savedServer.lastVoteAt,
+      totalVotes: savedServer.totalVotes,
+      voteCount: savedServer.votes.length
     }
   }
 
   votes(id: string) {
-    return this.savedBots
+    return this.savedServers
       .find(b => b.id === id)?.votes;
   }
 
   recentVotes(id: string): VoteStats[] {
-    const savedBot = this.savedBots.find(b => b.id === id);
-    if (!savedBot)
+    const savedServer = this.savedServers.find(b => b.id === id);
+    if (!savedServer)
       return null;
 
     return Array(7)
@@ -42,23 +43,23 @@ export default class Stats {
           (date.getMonth() + 1)
             .toString()
             .padStart(2, '0')}`,
-        count: savedBot.votes
+        count: savedServer.votes
           .filter(v => v.at?.getDate() === date?.getDate()).length }))
       .reverse();
   }
 
   topVoters(id: string): TopVoterStats[] {
-    const savedBot = this.savedBots.find(b => b.id === id);
-    if (!savedBot)
+    const savedServer = this.savedServers.find(b => b.id === id);
+    if (!savedServer)
       return null;
 
-    return savedBot.votes
+    return savedServer.votes
       .map(c => c.by)
       .filter(distinct)
-      .map(id => ({ userId: id, count: savedBot.votes.filter(v => v.by = id).length }));
+      .map(id => ({ userId: id, count: savedServer.votes.filter(v => v.by = id).length }));
   }
 
-  constructor(private bots = Deps.get<Bots>(Bots)) {}
+  constructor(private servers = Deps.get<Servers>(Servers)) {}
 
   async init() {
     await this.updateValues();
@@ -68,13 +69,12 @@ export default class Stats {
   }
 
   async updateValues() {
-    this.savedBots = await this.bots.getAll();
+    this.savedServers = await this.servers.getAll();
   }
 }
 
 export interface GeneralStats {
-  approvedAt: Date;
-  guildCount: number;
+  memberCount: number;
   lastVoteAt: Date;
   totalVotes: number;
   voteCount: number;
