@@ -7,7 +7,7 @@ export default class BumpCommand implements Command {
     name = 'bump';
     summary = 'Bump your server.';
     precondition: Permission = '';
-    cooldown = 3;
+    cooldown = 30 * 60;
     module = 'General';
 
     constructor(private guilds = Deps.get<Guilds>(Guilds)) {}

@@ -14,11 +14,13 @@ export default class InviteCommand implements Command {
     execute = async (ctx: CommandContext) => {
         const savedGuild = await this.guilds.get(ctx.guild);
         savedGuild.lastBumpAt = new Date();
+
+        const { code } = await ctx.channel
+            .createInvite({ temporary: false, reason: 'Invite command executed.' });
+            
+        savedGuild.invite = code;
         await savedGuild.save();
 
-        const newInvite = await ctx.channel
-            .createInvite({ temporary: false, reason: 'Invite command executed.' });
-
-        return ctx.channel.send(`☑ Invite updated to \`${newInvite.code}\`!`);
+        return ctx.channel.send(`☑ Invite updated to \`${code}\`!`);
     }
 }

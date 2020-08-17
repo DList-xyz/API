@@ -42,14 +42,18 @@ export default class CommandService {
             const slicedContent = msg.content.slice(prefix.length);
 
             const command = this.findCommand(slicedContent);
-            if (!command || this.cooldowns.active(msg.author, command)) return;
+            if (!command) return;
+
+            const cooldown = this.cooldowns.get(msg.member, command);
+            if (cooldown)
+                throw new TypeError(`Command is in a \`${command.cooldown / 60}\` minute cooldown for you or your server.`);
 
             this.validators.checkPreconditions(command, msg.member);
 
             await command.execute(new CommandContext(msg), 
             ...this.getCommandArgs(slicedContent));
             
-            this.cooldowns.add(msg.author, command);
+            this.cooldowns.add(msg.member, command);
         } catch (error) {
             const content = error?.message ?? 'Un unknown error occurred';          
             msg.channel.send(':warning: ' + content);

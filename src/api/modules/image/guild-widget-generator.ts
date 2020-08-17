@@ -60,9 +60,8 @@ export class ServerWidgetGenerator extends ImageGenerator {
         
         ctx.fillStyle = this.colors.bgPrimary;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        this.addGuildText(ctx, canvas, { x: -15, y: 20 });        
-        await this.addGuildAvatar(ctx, { x: -15, y: -15 }, true);
+              
+        await this.addGuildAvatar(ctx, { x: -5, y: -15 }, true);
         await this.addStats(ctx, canvas, { x: canvas.width - 150, y: -10 });
 
         await this.addFooter(canvas, ctx, { x: 0, y: -15 });
@@ -76,17 +75,17 @@ export class ServerWidgetGenerator extends ImageGenerator {
         const votesImage = await loadImage(`assets/img/chevron-circle-up.png`);
         const nativeSize = { w: 128, h: 128 };
 
-        ctx.drawImage(votesImage, pos.x + 25, pos.y,
+    ctx.drawImage(votesImage, pos.x + 25, pos.y,
             nativeSize.w / 6, nativeSize.h / 6);
         
-        ctx.font = 'bold 16px Arial, sans-serif';
+        ctx.font = 'bold 16px Whitney, sans-serif';
         ctx.fillStyle = 'white';
         ctx.fillText(this.savedGuild.votes.length.toString(),
             pos.x + 50, pos.y + 16.5);
     }
 
     private addGuildOverview(ctx: CanvasRenderingContext2D, canvas) {
-        ctx.font = '16px Arial, sans-serif';
+        ctx.font = '16px Whitney, sans-serif';
         ctx.fillStyle = 'gray';
         super.wrapText(ctx, this.savedGuild.listing.overview,
             25, canvas.height / 2, canvas.width - 50, 20);
@@ -109,7 +108,7 @@ export class ServerWidgetGenerator extends ImageGenerator {
     private addGuildText(ctx: CanvasRenderingContext2D, canvas, offset: Vector2D = { x: 0, y: 0 }) {
         const pos = { x: canvas.width / 4 + offset.x, y: canvas.height / 5 + offset.y };
 
-        ctx.font = '32px Arial, sans-serif';
+        ctx.font = super.applyText(canvas, this.guild.name);
         ctx.fillStyle = this.colors.primary;
         ctx.fillText(this.guild.name, pos.x, pos.y);
     }

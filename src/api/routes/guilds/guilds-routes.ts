@@ -9,7 +9,7 @@ import { sendError } from '../../modules/api-utils';
 import { ServerWidgetGenerator } from '../../modules/image/guild-widget-generator';
 import Stats from '../../modules/stats';
 import { AuthClient } from '../../server';
-import { getUser } from '../user-routes';
+import { getUser, AuthUser } from '../user-routes';
 
 export const router = Router();
 
@@ -34,7 +34,8 @@ router.get('/', async (req, res) => {
 
 router.get('/user', async (req, res) => {
     try {
-        const bots = await getManagableBots(req.query.key);
+        const authUser = await AuthClient.getUser(req.query.key);
+        const bots = await getManagableGuilds(authUser);
         res.json(bots);
     } catch (error) { sendError(res, 400, error); }
 });
@@ -52,7 +53,7 @@ router.get('/:id', (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        await validateServerManager(req.query.key, id);
+        await validateGuildManager(req.query.key, id);
 
         const guild = bot.guilds.cache.get(id);
         await guilds.delete(guild);
@@ -122,21 +123,24 @@ function validateIfCanVote(savedVoter: UserDocument) {
     }
 }
 
-async function getManagableBots(key: any) {
-    const { id } = await AuthClient.getUser(key);
+async function getManagableGuilds({ id }: AuthUser) {
     const owner = bot.users.cache.get(id);
 
     const savedGuilds = await guilds.getManageable(owner);
     const ids = savedGuilds.map(b => b._id);
 
-    return bot.users.cache.filter(u => ids.includes(u.id));
+    return bot.guilds.cache.filter(u => ids.includes(u.id));
 }
 
-export async function validateServerManager(key: any, botId: string) {
+export async function validateGuildManager(key: any, botId: string) {
     if (!key)
         throw new TypeError('Unauthorized.');
 
-    const bots = await getManagableBots(key);
-    if (!bots.some(b => b.id === botId))
-        throw TypeError('Bot not manageable.');
+    const authUser = await AuthClient.getUser(key);
+    const savedUser = await users.get(authUser); 
+    if (savedUser.role === 'admin') return;
+
+    const guilds = await getManagableGuilds(authUser);
+    if (!guilds.some(b => b.id === botId))
+        throw TypeError('Server not manageable.');
 }

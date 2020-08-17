@@ -4,6 +4,8 @@ export type Permission = '' | PermissionString;
 
 export interface Command {
     aliases?: string[];
+    /**
+     * Command cooldown in seconds for each user. */
     cooldown?: number;
     module: string;
     name: string;

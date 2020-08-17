@@ -5,7 +5,7 @@ import BotLogs from '../../../data/guild-logs';
 import { getUser } from '../user-routes';
 import { Listing } from '../../../data/models/guild';
 import AuditLogger from '../../modules/audit-logger';
-import { validateServerManager } from './guilds-routes';
+import { validateGuildManager } from './guilds-routes';
 import { sendError } from '../../modules/api-utils';
 import { bot } from '../../../bot';
 
@@ -37,7 +37,7 @@ router.put('/:id([0-9]{18})', async (req, res) => {
     const { id } = req.params;
     const key = req.query.key;
 
-    await validateServerManager(key, id);
+    await validateGuildManager(key, id);
 
     const listing: Listing = req.body;
     await validateCanEdit(req, id);
@@ -53,7 +53,7 @@ router.delete('/:id([0-9]{18})', async (req, res) => {
     const { id } = req.params;
     const key = req.query.key;
 
-    await validateServerManager(key, id);
+    await validateGuildManager(key, id);
 
     const guild = bot.guilds.cache.get(req.params.id);
     await guilds.delete(guild);

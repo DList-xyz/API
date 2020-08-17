@@ -1,25 +1,35 @@
-import { User } from "discord.js";
-import { Command } from "../commands/command";
+import { GuildMember } from 'discord.js';
+import { Command } from '../commands/command';
 
 export default class Cooldowns {
     private cooldowns: CommandCooldown[] = [];
 
-    active(author: User, command: Command) {
+    get(member: GuildMember, command: Command) {
         return this.cooldowns
-            .some(c => c.userId === author.id && c.commandName === command.name);
+            .find(c => (c.userId === member.id
+                    && c.commandName === command.name)
+                || (c.commandName === command.name
+                    && c.guildId === member.guild.id));
     }
-    add(user: User, command: Command) {
-        const cooldown = { userId: user.id, commandName: command.name };
+    add(member: GuildMember, command: Command) {
+        const cooldown = {
+            userId: member.id,
+            commandName: command.name,
+            guildId: member.guild.id
+        };
 
-        if (!this.active(user, command))
+        if (!this.get(member, command))
             this.cooldowns.push(cooldown);
 
         const seconds = (command.cooldown ?? 0) * 1000;
-        setTimeout(() => this.remove(user, command), seconds);
+        setTimeout(() => this.remove(member, command), seconds);
     }
-    remove(user: User, command: Command) {
+    remove(member: GuildMember, command: Command) {
         const index = this.cooldowns
-            .findIndex(c => c.userId === user.id && c.commandName === command.name);
+            .findIndex(c => (c.userId === member.id
+                    && c.commandName === command.name)
+                || (c.commandName === command.name
+                    && c.guildId === member.guild.id));
         this.cooldowns.splice(index, 1);
     }
 }
@@ -27,4 +37,5 @@ export default class Cooldowns {
 export interface CommandCooldown {
     userId: string;
     commandName: string;
+    guildId: string;
 }

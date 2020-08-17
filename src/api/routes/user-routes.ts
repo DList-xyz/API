@@ -33,7 +33,9 @@ export async function getUser(key: any) {
     let authUser: AuthUser = await AuthClient.getUser(key);
 
     authUser['displayAvatarURL'] = authUser.avatarUrl(64);
-    authUser = JSON.parse(JSON.stringify(authUser).replace(/"_(.*?)"/g, '"$1"'));
+    authUser = JSON
+        .parse(JSON.stringify(authUser)
+        .replace(/"_(.*?)"/g, '"$1"'));
 
     return authUser;
 }

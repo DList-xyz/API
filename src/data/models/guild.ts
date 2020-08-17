@@ -21,7 +21,7 @@ export interface Vote {
 const guildSchema = new Schema({
     _id: String,
     badges: { type: Array, default: [] },
-    invite: String,
+    invite: { type: String, default: '' },
     flags: { type: Array, default: [] },
     listing: { type: Object, default: new Listing() },
     ownerId: String,
