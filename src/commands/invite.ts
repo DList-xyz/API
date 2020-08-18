@@ -6,7 +6,7 @@ export default class InviteCommand implements Command {
     name = 'invite';
     summary = 'Update the invite for your server.';
     precondition: Permission = 'MANAGE_CHANNELS';
-    cooldown = 3;
+    cooldown = 1 * 60;
     module = 'General';
 
     constructor(private guilds = Deps.get<Guilds>(Guilds)) {}

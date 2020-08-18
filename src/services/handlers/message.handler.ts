@@ -17,6 +17,6 @@ export default class MessageHandler implements EventHandler {
             return this.commands.handle(msg, prefix);
         
         if (msg.content === `<@!${msg.client.user.id}>`)       
-            return msg.reply(`The prefix is \`${prefix}\``);
+            return msg.reply(`The prefix is \`${prefix}\`\nType \`.dl help\` to list commands.`);
     }
 }

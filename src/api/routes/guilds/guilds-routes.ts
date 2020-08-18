@@ -10,6 +10,8 @@ import { ServerWidgetGenerator } from '../../modules/image/guild-widget-generato
 import Stats from '../../modules/stats';
 import { AuthClient } from '../../server';
 import { getUser, AuthUser } from '../user-routes';
+import config from '../../../../config.json';
+import { TextChannel, MessageEmbed } from 'discord.js';
 
 export const router = Router();
 
@@ -110,6 +112,35 @@ router.get('/:id/stats', (req, res) => {
         votes: stats.votes(id),
         recentVotes: stats.recentVotes(id)
     });
+});
+
+router.get('/:id/report', async (req, res) => {
+    try {
+        const authUser = await getUser(req.query.key);
+        const user = bot.users.cache.get(authUser.id);
+
+        const targetGuild = bot.guilds.cache.get(req.params.id);
+        if (!targetGuild)
+            throw new TypeError('Gulld not found.');
+
+        await (bot.guilds.cache
+            .get(config.guild.id)?.channels.cache
+            .get(config.guild.reportChannelId) as TextChannel)
+            ?.send(new MessageEmbed({
+                title: `Report for \`${targetGuild.name}\``,
+                fields: [
+                    { name: 'Server ID', value: `\`${targetGuild.id}\`` },
+                    { name: 'Reason', value: req.query.reason }
+                ],
+                thumbnail: { url: targetGuild.iconURL({ dynamic: true, size: 64 }) },
+                footer: {
+                    text: `Reported by ${user.tag} - ${user.id}`,
+                    iconURL: user.avatarURL({ dynamic: true, size: 32 }) 
+                }
+            }));
+
+        res.json({ success: true });
+    } catch (error) { sendError(res, 400, error); }
 });
 
 function validateIfCanVote(savedVoter: UserDocument) {

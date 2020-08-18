@@ -1,13 +1,7 @@
-# 2PG - Simple, powerful Discord bot
-Simple multi-purpose Discord bot made with TypeScript-> https://2pg.xyz
+# DList - API
+Best server list (with multicoloured rockets), like disboard.
 
-**Dashboard**: https://github.com/theADAMJR/2PG-Dashboard
-
-⭐ Please star this if you find it useful. This will support the project, and help improve 2PG.
-
-![2PG Avatar](https://2pg.xyz/assets/img/2PGAvatarTransparent.png)
-
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8d6c9610e0eb4ae5a4045ab3b92f80bc)](https://www.codacy.com/manual/ADAMJR/2PG?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=theADAMJR/2PG&amp;utm_campaign=Badge_Grade)
+**Website**: https://github.com/theADAMJR/DList
 
 ## Installation
 1) Fork/download this respository
@@ -17,53 +11,23 @@ Simple multi-purpose Discord bot made with TypeScript-> https://2pg.xyz
 `config.json` example:
 ```
 {
-    "bot": { // https://discordapp.com/developers/applications
-        "token": "yourBotToken",
-        "secret": "oauthSecret",
-        "id": "discordBotId"
-    },
-    "api": {
-        "port": "3000",
-        "url": "https://2pg.xyz/api",
-        "managerPermission": "MANAGE_GUILD",
-        "stripe": { // https://dashboard.stripe.com/test/apikeys
-            "apiKey": "stripeAPIKey"
-        }
-    },
-    "webapp": {
-        "url": "https://2pg.xyz",
-        "distPath": "/dist/dashboard"
-    },
-    "lavalink": {
-        "password": "youshallnotpass"
-    },
-    "tests": { // optional -> used for tests
-        "guild": {
-            "id": "yourTestGuildId"
-        }
-    },
-    "mongoURL": "mongodb://localhost/2PG",
-    "modules": ["announce", "autoMod", "commands", "general", "music", "xp", "settings"]
+  "bot": {
+    "token": "",
+    "secret": "",
+    "ownerId": "218459216145285121",
+    "activity": "dlist.xyz",
+    "id": "533947001578979328"
+  },
+  "api": {
+    "url": "http://localhost:3000/api",
+    "port": 3000,
+    "supportInvite": "uDTgxyg"
+  },
+  "guild": {
+    "id": "744166274028011561",
+    "reportChannelId": "745252436976861224"
+  },
+  "dashboardURL": "http://localhost:4200",
+  "mongoURL": "mongodb://localhost/DList"
 }
 ```
-- Remove Comments
-
-
-## Hosting
-1) `npm start` to start the bot, and Lavalink
-
-### Database
-- Remember to have a local MongoDB database running `mongod`
-
-### Music
-- Have Lavalink.jar running - `java -jar Lavalink.jar` (done with npm start)
-
-[Lavalink Setup](https://github.com/Frederikam/Lavalink#server-configuration)
-
-## Troubleshooting
-- Open an issue, if you find any bugs or have any suggestions etc.
-
-### Common Errors
-`UnhandledPromiseRejectionWarning: MongooseServerSelectionError: connect ECONNREFUSED 127.0.0.1:27017`
-
-**Possible Cause**: No MongoDB server instance running, start with `mongod`
