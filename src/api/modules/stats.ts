@@ -1,12 +1,17 @@
 import Deps from '../../utils/deps';
 import Guilds from '../../data/guilds';
 import { GuildDocument } from '../../data/models/guild';
-import { bot } from '../../bot';
+import { bot, emitter } from '../../bot';
 
 const distinct = (v, i, a) => a.indexOf(v) === i;
 
 export default class Stats {
   private savedGuilds: GuildDocument[] = [];
+
+  constructor(private guilds = Deps.get<Guilds>(Guilds)) {
+    emitter.on('savedGuildCreate',
+      (savedGuild) => this.savedGuilds.push(savedGuild));
+  }
 
   general(id: string): GeneralStats {
     const guild = bot.guilds.cache.get(id);
@@ -58,8 +63,6 @@ export default class Stats {
       .filter(distinct)
       .map(id => ({ userId: id, count: savedGuild.votes.filter(v => v.by = id).length }));
   }
-
-  constructor(private guilds = Deps.get<Guilds>(Guilds)) {}
 
   async init() {
     await this.updateValues();

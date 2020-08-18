@@ -2,6 +2,7 @@ import { GuildDocument, SavedGuild } from './models/guild';
 import DBWrapper from './db-wrapper';
 import { getWeek } from '../utils/command-utils';
 import { Guild } from 'discord.js';
+import { emitter } from '../bot';
 
 export default class Guilds extends DBWrapper<Guild, GuildDocument> {
     protected async getOrCreate(guild: Guild) {
@@ -14,18 +15,19 @@ export default class Guilds extends DBWrapper<Guild, GuildDocument> {
             && getWeek(savedGuild.lastVoteAt) === getWeek(new Date());
         if (!votedForThisWeek)
             savedGuild.votes = [];
-        
-        if (!savedGuild.listing.id)
-            savedGuild.listing.id = guild.id;
             
         return savedGuild;
     }
 
-    protected create(guild: Guild) {        
-        return new SavedGuild({
+    protected create(guild: Guild) {
+        const savedGuild = new SavedGuild({
             _id: guild.id,
             ownerId: guild.ownerID
-        }).save();
+        });
+
+        emitter.emit('savedGuildCreate', savedGuild);
+
+        return savedGuild.save();
     }
 
     async delete({ id }: Guild) {

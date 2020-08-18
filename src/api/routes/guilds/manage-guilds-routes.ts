@@ -14,32 +14,12 @@ export const router = Router();
 const guilds = Deps.get<Guilds>(Guilds),
       logs = Deps.get<BotLogs>(BotLogs);
 
-router.post('/', async (req, res) => {
-  try {
-    const authUser = await getUser(req.query.key);
-
-    const listing: Listing = req.body;
-    const id = listing.id;
-    await validateCanCreate(req, id);
-
-    const guild = bot.guilds.cache.get(req.params.id);
-    const savedGuild = await guilds.get(guild);
-    savedGuild.listing = listing;
-    savedGuild.ownerId = authUser.id;
-    await savedGuild.save();
-
-    res.status(200).json(savedGuild);
-  } catch (error) { sendError(res, 400, error); }
-});
-
 router.put('/:id([0-9]{18})', async (req, res) => {
   try {
     const { id } = req.params;
     const key = req.query.key;
 
     await validateGuildManager(key, id);
-
-    const listing: Listing = req.body;
     await validateCanEdit(req, id);
 
     let savedGuild = await saveBotAndChanges(id, req);

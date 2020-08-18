@@ -6,7 +6,6 @@ export interface Flag {
 }
 
 export class Listing {
-    id = '';
     body = 'A server that has not yet been edited.';
     language: string;
     overview = 'No description set.';

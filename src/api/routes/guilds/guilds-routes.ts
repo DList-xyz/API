@@ -34,8 +34,7 @@ router.get('/', async (req, res) => {
 
 router.get('/user', async (req, res) => {
     try {
-        const authUser = await AuthClient.getUser(req.query.key);
-        const bots = await getManagableGuilds(authUser);
+        const bots = await getManagableGuilds(req.query.key?.toString());
         res.json(bots);
     } catch (error) { sendError(res, 400, error); }
 });
@@ -123,12 +122,10 @@ function validateIfCanVote(savedVoter: UserDocument) {
     }
 }
 
-async function getManagableGuilds({ id }: AuthUser) {
-    const owner = bot.users.cache.get(id);
-
-    const savedGuilds = await guilds.getManageable(owner);
-    const ids = savedGuilds.map(b => b._id);
-
+async function getManagableGuilds(key: string) {
+    const authGuilds = await AuthClient.getGuilds(key);
+    
+    const ids = Array.from(authGuilds.keys());
     return bot.guilds.cache.filter(u => ids.includes(u.id));
 }
 
@@ -140,7 +137,7 @@ export async function validateGuildManager(key: any, botId: string) {
     const savedUser = await users.get(authUser); 
     if (savedUser.role === 'admin') return;
 
-    const guilds = await getManagableGuilds(authUser);
+    const guilds = await getManagableGuilds(key);
     if (!guilds.some(b => b.id === botId))
         throw TypeError('Server not manageable.');
 }

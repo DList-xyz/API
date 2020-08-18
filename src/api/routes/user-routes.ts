@@ -7,6 +7,8 @@ import { bot } from '../../bot';
 
 export const router = Router();
 
+const users = Deps.get<Users>(Users);
+
 router.get('/', async (req, res) => {
     try {
         const user = await getUser(req.query.key);
@@ -17,7 +19,7 @@ router.get('/', async (req, res) => {
 router.get('/saved', async (req, res) => {
     try {        
         const user = await getUser(req.query.key);
-        const savedUser = await Deps.get<Users>(Users).get(user);
+        const savedUser = await users.get(user);
         res.json(savedUser);
     } catch (error) { sendError(res, 400, error); }
 });
