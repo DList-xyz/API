@@ -1,9 +1,8 @@
 import fs from 'fs';
-import { Message,  TextChannel } from 'discord.js';
+import { Message } from 'discord.js';
 import { Command, CommandContext } from '../commands/command';
 import Log from '../utils/log';
 import Deps from '../utils/deps';
-import { GuildDocument } from '../data/models/guild';
 import Cooldowns from './cooldowns';
 import Validators from './validators';
 import { promisify } from 'util';

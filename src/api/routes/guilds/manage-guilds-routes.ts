@@ -25,7 +25,8 @@ router.put('/:id([0-9]{18})', async (req, res) => {
     let savedGuild = await saveBotAndChanges(id, req);
 
     res.json(savedGuild);
-  } catch (error) { sendError(res, 400, error); }
+  } catch (error) { sendError(res, 400, error); console.log(error);
+   }
 });
 
 router.delete('/:id([0-9]{18})', async (req, res) => {
@@ -42,14 +43,6 @@ router.delete('/:id([0-9]{18})', async (req, res) => {
   } catch (error) { sendError(res, 400, error); }
 });
 
-async function validateCanCreate(req, id: string) {
-  if (!req.body)
-    throw new TypeError('Request body is empty.');
-
-  const exists = await guilds.exists(id);
-  if (exists)
-    throw new TypeError('Bot already exists!');
-}
 async function validateCanEdit(req, id: string) {
   if (!req.body)
     throw new TypeError('Request body is empty.');

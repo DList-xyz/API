@@ -5,7 +5,7 @@ import Deps from '../utils/deps';
 export default class InviteCommand implements Command {
     name = 'invite';
     summary = 'Update the invite for your server.';
-    precondition: Permission = '';
+    precondition: Permission = 'MANAGE_CHANNELS';
     cooldown = 3;
     module = 'General';
 
