@@ -1,6 +1,8 @@
 # DList - API
 Best server list (with multicoloured rockets), like disboard.
 
+![DList Logo](https://dlist.xyz/assets/img/logo.png)
+
 **Website**: https://github.com/theADAMJR/DList
 
 ## Installation
