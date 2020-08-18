@@ -1,14 +1,12 @@
 <title>API</title>
-<description>Interact with DBots through HTTP requests.</description>
+<description>Interact with DList through HTTP requests.</description>
 <url>api</url>
 
 # API
-- Interact with DBots through HTTP requests
+- Interact with DList through HTTP requests
 
 ## Uses
-- Bot interaction for webapp
-- XP Cards
-- Creating payment sessions
+- Server interaction for dashboard
 - OAuth2 Discord authorization
 
 ## Status Codes
@@ -19,50 +17,31 @@ Code | Description
 429  | Too many requests
 500  | Internal server error (rare)
 
-**API Error Examples**:
+**API Error Example**:
 `{ code: 400, message: 'Bad Request' }`
 
 ---
 
 ## Rate Limiting
-DBots uses rate limiting to reduce API abuse.
+DList uses rate limiting to reduce API abuse.
 
 A maximum of *600 requests* can be sent *per 10 minutes*.
 
 ---
 
-## Vote Webhook
-This is what is posted to a bots **Vote Webhook URL**, when a bot is voted for.
+## Server 
+
+## Server Stats
+You can view the stats of a server, including voting, servers and more.
+
+**URL**: `https://dlist.xyz/api/guilds/:id/stats`
 
 ### Reponse
 
 **Schema**:
 ```ts
 {
-  at: Date; // JSON date when of vote
-  by: string; // id of user that votes
-}
-```
-
-**Example**:
-{
-  at: "2020-08-07T12:56:27.100Z",
-  by: "218459216145285121"
-}
-
----
-
-## Get Bot Stats
-You can view the stats of a bot, including voting, guilds and more.
-
-**URL**: `https://dbots.co/api/bots/:id/stats`
-
-### Reponse
-
-**Schema**:
-```ts
-{
-  general: { // general bot stats
+  general: { // general guild stats
     approvedAt: Date,
     guildCount: number,
     lastVoteAt: Date,
@@ -81,58 +60,7 @@ You can view the stats of a bot, including voting, guilds and more.
     at: Date;
     by: string;
   }
-```
-
-**Example**:
-```json
-{
-  "general": {
-    "approvedAt": "2020-06-19T15:13:52.303Z",
-    "lastVoteAt": "2020-08-07T12:56:27.100Z",
-    "totalVotes": 3,
-    "voteCount": 1
-  },
-  "topVoters": [
-    {
-      "at": "2020-08-07T12:56:27.096Z",
-      "by": "218459216145285121"
-    }
-  ],
-  "votes": [
-    {
-      "at": "2020-08-07T12:56:27.096Z",
-      "by": "218459216145285121"
-    }
-  ],
-  "recentVotes": [
-    {
-      "day": "6/7",
-      "count": 1
-    },
-    {
-      "day": "5/7",
-      "count": 0
-    },
-    {
-      "day": "4/7",
-      "count": 0
-    },
-    {
-      "day": "3/7",
-      "count": 0
-    },
-    {
-      "day": "2/7",
-      "count": 0
-    },
-    {
-      "day": "1/7",
-      "count": 0
-    },
-    {
-      "day": "7/7",
-      "count": 0
-    }
-  ]
 }
 ```
+
+**Example**: `https://dlist.xyz/api/guilds/744166274028011561/stats`

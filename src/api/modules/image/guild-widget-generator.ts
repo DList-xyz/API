@@ -61,7 +61,7 @@ export class ServerWidgetGenerator extends ImageGenerator {
         ctx.fillStyle = this.colors.bgPrimary;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
               
-        await this.addGuildAvatar(ctx, { x: -5, y: -15 }, true);
+        await this.addGuildAvatar(ctx, { x: -15, y: -15 }, true);
         await this.addStats(ctx, canvas, { x: canvas.width - 150, y: -10 });
 
         await this.addFooter(canvas, ctx, { x: 0, y: -15 });

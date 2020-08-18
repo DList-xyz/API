@@ -10,7 +10,7 @@ export default class ImageGenerator {
     let fontSize = 32;
 
     do {
-      context.font = `${fontSize -= 4}px Whitney, sans-serif`;
+      context.font = `${fontSize -= 8}px Whitney, sans-serif`;
     }
     while (context.measureText(text).width > canvas.width - offsetX);
     return context.font;
