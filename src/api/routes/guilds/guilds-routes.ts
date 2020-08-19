@@ -5,7 +5,7 @@ import { SavedGuild } from '../../../data/models/guild';
 import { UserDocument } from '../../../data/models/user';
 import Users from '../../../data/users';
 import Deps from '../../../utils/deps';
-import { sendError } from '../../modules/api-utils';
+import { sendError, toAPIGuild } from '../../modules/api-utils';
 import { ServerWidgetGenerator } from '../../modules/image/guild-widget-generator';
 import Stats from '../../modules/stats';
 import { AuthClient } from '../../server';
@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
             const guild = bot.guilds.cache.get(savedGuild.id);
             if (!guild) continue;
 
-            guilds.push(guild);
+            guilds.push(toAPIGuild(guild));
         }
         res.json({ saved: savedGuilds, guilds });
     } catch (error) { sendError(res, 400, error); }
@@ -44,10 +44,7 @@ router.get('/user', async (req, res) => {
 router.get('/:id', (req, res) => {
     try {
         const guild = bot.guilds.cache.get(req.params.id);
-        res.json({
-            ...guild,
-            iconURL: guild.iconURL({ dynamic: true, size: 256 })
-        });
+        res.json(toAPIGuild(guild));
     } catch (error) { sendError(res, 400, error); }
 });
 
