@@ -17,7 +17,7 @@ export default class ReadyHandler implements EventHandler {
             activity: {
                 name: config.bot.activity,
                 type: 'WATCHING',
-                url: 'https://dbots.co'
+                url: 'https://dlist.xyz'
             }            
         });
         
