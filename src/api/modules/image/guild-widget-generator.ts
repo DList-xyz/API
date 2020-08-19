@@ -62,7 +62,7 @@ export class ServerWidgetGenerator extends ImageGenerator {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
               
         await this.addGuildAvatar(ctx, { x: -15, y: -15 }, true);
-        await this.addStats(ctx, canvas, { x: canvas.width - 150, y: -10 });
+        await this.addStats(ctx, canvas, { x: 50, y: -10 });
 
         await this.addFooter(canvas, ctx, { x: 0, y: -15 });
 
@@ -73,15 +73,26 @@ export class ServerWidgetGenerator extends ImageGenerator {
         const pos = { x: offset.x, y: canvas.height / 3.25 + offset.y };
         
         const votesImage = await loadImage(`assets/img/chevron-circle-up.png`);
+        const usersImage = await loadImage(`assets/img/users.png`);
         const nativeSize = { w: 128, h: 128 };
 
-    ctx.drawImage(votesImage, pos.x + 25, pos.y,
+        ctx.drawImage(votesImage, pos.x + 25, pos.y,
             nativeSize.w / 6, nativeSize.h / 6);
         
         ctx.font = 'bold 16px Whitney, sans-serif';
         ctx.fillStyle = 'white';
         ctx.fillText(this.savedGuild.votes.length.toString(),
             pos.x + 50, pos.y + 16.5);
+        ctx.fillText(this.fancyNumber(this.guild.memberCount),
+            (canvas.width / 2) + pos.x + 27.5, pos.y + 16.5);
+
+        ctx.drawImage(usersImage, (canvas.width / 2) + pos.x, pos.y,
+            nativeSize.w / 6, nativeSize.h / 6);
+    }
+    private fancyNumber(x: number) { 
+        let nums = x.toString().replace(/,/g, '');
+        if(!nums || nums.endsWith('.')) return;
+        return parseFloat(nums).toLocaleString(); 
     }
 
     private addGuildOverview(ctx: CanvasRenderingContext2D, canvas) {

@@ -21,7 +21,6 @@ const guildSchema = new Schema({
     _id: String,
     badges: { type: Array, default: [] },
     invite: { type: String, default: '' },
-    flags: { type: Array, default: [] },
     listing: { type: Object, default: new Listing() },
     ownerId: String,
     totalVotes: { type: Number, default: 0 },
@@ -34,7 +33,6 @@ export interface GuildDocument extends Document {
     _id: string;
     badges: string[];
     invite: string;
-    flags: Flag[];
     listing: Listing;
     ownerId: string;
     totalVotes: number;
