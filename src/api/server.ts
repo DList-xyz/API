@@ -28,9 +28,9 @@ export class API {
         app.use(cors());
         app.use(bodyParser.json());
 
-        app.use('/api/user', userRoutes);
-        app.use('/api/guilds', guildsRoutes, manageBotRoutes);
-        app.use('/api/guilds/:id', reviewerRoutes, statsRoutes);
+        app.use('/api/v1/user', userRoutes);
+        app.use('/api/v1/guilds', guildsRoutes, manageBotRoutes);
+        app.use('/api/v1/guilds/:id', reviewerRoutes, statsRoutes);
         app.use('/api', apiRoutes);
 
         app.get('/server', (req, res) => res.redirect(`https://discord.gg/${config.api.supportInvite}`));
