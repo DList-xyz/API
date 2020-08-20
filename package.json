@@ -2,7 +2,7 @@
   "name": "dlist-api",
   "version": "0.0.1",
   "description": "Best Discord server list",
-  "main": "bot.ts",
+  "main": "src/bot.ts",
   "scripts": {
     "test": "npm run test:u && npm run test:i",
     "test:u": "ts-mocha tests/unit/*.tests.ts",

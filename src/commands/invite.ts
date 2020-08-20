@@ -16,7 +16,7 @@ export default class InviteCommand implements Command {
         savedGuild.lastBumpAt = new Date();
 
         const { code } = await ctx.channel
-            .createInvite({ temporary: false, reason: 'Invite command executed.' });
+            .createInvite({ temporary: false, maxAge: 0, reason: 'Invite command executed.' });
             
         savedGuild.invite = code;
         await savedGuild.save();

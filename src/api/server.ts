@@ -28,17 +28,19 @@ export class API {
         app.use(cors());
         app.use(bodyParser.json());
 
-        app.use('/api/user', userRoutes);
-        app.use('/api/guilds', guildsRoutes, manageBotRoutes);
-        app.use('/api/guilds/:id', reviewerRoutes, statsRoutes);
-        app.use('/api', apiRoutes);
+        app.use('/v1/user', userRoutes);
+        app.use('/v1/guilds', guildsRoutes, manageBotRoutes);
+        app.use('/v1/guilds/:id', reviewerRoutes, statsRoutes);
+        app.use('/v1', apiRoutes);
 
         app.get('/server', (req, res) => res.redirect(`https://discord.gg/${config.api.supportInvite}`));
-        
+ 
+/*       
         app.use(express.static(join(__dirname, '../../../dist/dashboard')));
         
         app.all('*', (req, res) => res.status(200).sendFile(
             join(__dirname, '../../dist/dashboard/index.html')));
+*/
 
         const port = config.api.port || 3000;
         app.listen(port, () => Log.info(`API is live on port ${port}`));
