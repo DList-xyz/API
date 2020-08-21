@@ -32,8 +32,6 @@ export class API {
         app.use('/api/v1/guilds', guildsRoutes, manageBotRoutes);
         app.use('/api/v1/guilds/:id', reviewerRoutes, statsRoutes);
         app.use('/api/v1', apiRoutes);
-
-        app.get('/server', (req, res) => res.redirect(`https://discord.gg/${config.api.supportInvite}`));
   
         app.use(express.static(join(__dirname, '../../dist/dashboard')));
         
