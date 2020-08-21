@@ -2,7 +2,7 @@ import { Router } from 'express';
 import Deps from '../../../utils/deps';
 import BotLogs from '../../../data/guild-logs';
 import { sendError } from '../../modules/api-utils';
-import { validateGuildManager } from './guilds-routes';
+import { validateGuildManager } from '../../modules/api-utils';
 
 export const router = Router({ mergeParams: true });
 

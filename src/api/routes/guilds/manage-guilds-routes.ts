@@ -2,9 +2,8 @@ import { Router } from 'express';
 import Deps from '../../../utils/deps';
 import Guilds from '../../../data/guilds';
 import BotLogs from '../../../data/guild-logs';
-import AuditLogger from '../../modules/audit-logger';
-import { validateGuildManager } from './guilds-routes';
-import { sendError } from '../../modules/api-utils';
+import { validateGuildManager } from '../../modules/api-utils';
+import { sendError, validateCanEdit, saveBotAndChanges } from '../../modules/api-utils';
 import { bot } from '../../../bot';
 
 export const router = Router();
@@ -40,28 +39,3 @@ router.delete('/:id([0-9]{18})', async (req, res) => {
     res.json({ success: true });
   } catch (error) { sendError(res, 400, error); }
 });
-
-async function validateCanEdit(req, id: string) {
-  if (!req.body)
-    throw new TypeError('Request body is empty.');
-
-  const exists = await guilds.exists(id);
-  if (!exists)
-    throw new TypeError('Bot does not exist.');
-}
-
-async function saveBotAndChanges(req: any, id: string) {
-  const guild = bot.guilds.cache.get(id); 
-  let savedGuild = await guilds.get(guild);
-
-  const change = AuditLogger.getChanges(
-    { old: savedGuild.listing, new: req.body }, savedGuild.ownerId);
-  
-  savedGuild.listing = req.body;
-
-  const log = await logs.get(id);
-  log.changes.push(change);
-  await log.save();
-  
-  return guilds.save(savedGuild);
-}

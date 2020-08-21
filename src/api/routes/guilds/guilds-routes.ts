@@ -2,14 +2,11 @@ import { Router } from 'express';
 import { bot } from '../../../bot';
 import Guilds from '../../../data/guilds';
 import { SavedGuild } from '../../../data/models/guild';
-import { UserDocument } from '../../../data/models/user';
 import Users from '../../../data/users';
 import Deps from '../../../utils/deps';
-import { sendError, toAPIGuild } from '../../modules/api-utils';
+import { sendError, toAPIGuild, getManagableGuilds, validateGuildManager, getUser, validateIfCanVote } from '../../modules/api-utils';
 import { ServerWidgetGenerator } from '../../modules/image/guild-widget-generator';
 import Stats from '../../modules/stats';
-import { AuthClient } from '../../server';
-import { getUser, AuthUser } from '../user-routes';
 import config from '../../../../config.json';
 import { TextChannel, MessageEmbed } from 'discord.js';
 
@@ -139,33 +136,3 @@ router.get('/:id/report', async (req, res) => {
         res.json({ success: true });
     } catch (error) { sendError(res, 400, error); }
 });
-
-function validateIfCanVote(savedVoter: UserDocument) {
-    const twelveHoursMs = 1000 * 60 * 60 * 12;
-    const oneDayAgo = new Date(Date.now() - twelveHoursMs);
-    if (savedVoter.lastVotedAt > oneDayAgo) {
-        const timeLeftMs = new Date(savedVoter.lastVotedAt.getTime() + twelveHoursMs).getTime() - Date.now();
-        const hoursLeft = (timeLeftMs / 1000 / 60 / 60);
-        throw new TypeError(`You have already voted. You can next vote in ${hoursLeft.toFixed(2)} hours.`);
-    }
-}
-
-async function getManagableGuilds(key: string) {
-    const authGuilds = await AuthClient.getGuilds(key);
-    
-    const ids = Array.from(authGuilds.keys());
-    return bot.guilds.cache.filter(u => ids.includes(u.id));
-}
-
-export async function validateGuildManager(key: any, botId: string) {
-    if (!key)
-        throw new TypeError('Unauthorized.');
-
-    const authUser = await AuthClient.getUser(key);
-    const savedUser = await users.get(authUser); 
-    if (savedUser.role === 'admin') return;
-
-    const guilds = await getManagableGuilds(key);
-    if (!guilds.some(b => b.id === botId))
-        throw TypeError('Server not manageable.');
-}

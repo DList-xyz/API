@@ -3,7 +3,7 @@ import Guilds from '../../../data/guilds';
 import Users from '../../../data/users';
 import Deps from '../../../utils/deps';
 import { sendError } from '../../modules/api-utils';
-import { getUser } from '../user-routes';
+import { getUser } from '../../modules/api-utils';
 import { bot } from '../../../bot';
 
 export const router = Router({ mergeParams: true });
