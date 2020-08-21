@@ -22,7 +22,10 @@ export function toAPIGuild(guild: Guild) {
     name: guild.name,
     ownerID: guild.ownerID,
     memberCount: guild.memberCount,
-    iconURL: guild.iconURL({ dynamic: true, size: 256 })
+    iconURL: guild.iconURL({ dynamic: true, size: 256 }),
+    managerIds: guild.members.cache
+      .filter(m => m.permissions.has('MANAGE_GUILD'))
+      .map(m => m.id)
   }
 }
 

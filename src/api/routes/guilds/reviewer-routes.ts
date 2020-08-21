@@ -11,22 +11,6 @@ export const router = Router({ mergeParams: true });
 const guilds = Deps.get<Guilds>(Guilds),
       users = Deps.get<Users>(Users);
 
-router.post('/review', async (req, res) => {
-  try {
-    const reviewer = await getUser(req.query.key);
-    const savedReviewer = await users.get(reviewer);
-    if (savedReviewer.role !== 'admin' &&
-      savedReviewer.role !== 'reviewer')
-      throw new TypeError('Insufficient permissions.');
-    
-    const exists = await guilds.exists(req.params.id);
-    if (!exists)
-      throw new TypeError('Bot does not exist.');
-
-    res.json({ success: true });
-  } catch (error) { sendError(res, 400, error); }
-});
-
 router.get('/add-badge/:name', async (req, res) => {
   try {
     const reviewer = await getUser(req.query.key);
