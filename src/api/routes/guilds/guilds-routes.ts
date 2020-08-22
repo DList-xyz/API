@@ -102,7 +102,7 @@ router.get('/:id/stats', (req, res) => {
 
     res.json({
         general: stats.general(id),
-        topVoters: stats.votes(id),
+        topVoters: stats.topVoters(id),
         votes: stats.votes(id),
         recentVotes: stats.recentVotes(id)
     });
