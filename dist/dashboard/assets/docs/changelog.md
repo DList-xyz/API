@@ -20,6 +20,7 @@
 - `/` -> higher quality icons
 - `/dashboard/servers/:id/edit` -> users with `MANAGE_GUILD` can now edit their server listing
 - `/` -> bumped guilds only show if they have been bumped
+- `/search` -> you can now search by server ID or server name 
 
 **Remove**:
 - `/api/v1/guilds` -> unnecessary guild properties
