@@ -13,6 +13,8 @@
 ### v0.0.2a
 `Upcoming`
 
+![v0.0.2a](assets/docs/img/img/v0.0.2a.png)
+
 **Add**:
 - `/guilds/:id` -> report captcha 
 
