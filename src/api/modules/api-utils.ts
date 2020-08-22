@@ -40,27 +40,25 @@ export function validateIfCanVote(savedVoter: UserDocument) {
   }
 }
 
-export async function getManagableGuilds(key: string) {
-  const authGuilds: Map<string, AuthGuild> = await AuthClient.getGuilds(key);
-
-  const ids = Array.from(authGuilds.values())
-    .filter(g => g.permissions.includes('MANAGE_GUILD'))
-    .map(g => g.id);
-
+export async function getManagableGuilds(userId: string) {
   return bot.guilds.cache
-    .filter(u => ids.includes(u.id));
+    .filter(g => g.members.cache
+      .get(userId)
+      ?.hasPermission('MANAGE_GUILD'));
 }
 
-export async function validateGuildManager(key: any, botId: string) {
+export async function validateGuildManager(key: any, guildId: string) {
   if (!key)
     throw new TypeError('Unauthorized.');
 
   const authUser: AuthUser = await AuthClient.getUser(key);
+  
   const savedUser = await users.get(authUser); 
   if (savedUser.role === 'admin') return;
 
-  const guilds = await getManagableGuilds(key);
-  if (!guilds.some(b => b.id === botId))
+  const guilds = await getManagableGuilds(authUser.id);
+  
+  if (!guilds.some(g => g.id === guildId))
     throw TypeError('Server not manageable.');
 }
 

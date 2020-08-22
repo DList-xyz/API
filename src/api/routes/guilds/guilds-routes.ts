@@ -4,11 +4,12 @@ import Guilds from '../../../data/guilds';
 import { SavedGuild } from '../../../data/models/guild';
 import Users from '../../../data/users';
 import Deps from '../../../utils/deps';
-import { sendError, toAPIGuild, getManagableGuilds, validateGuildManager, getUser, validateIfCanVote } from '../../modules/api-utils';
+import { sendError, toAPIGuild, getManagableGuilds, validateGuildManager, getUser, validateIfCanVote, AuthUser } from '../../modules/api-utils';
 import { ServerWidgetGenerator } from '../../modules/image/guild-widget-generator';
 import Stats from '../../modules/stats';
 import config from '../../../../config.json';
 import { TextChannel, MessageEmbed } from 'discord.js';
+import { AuthClient } from '../../server';
 
 export const router = Router();
 
@@ -33,7 +34,8 @@ router.get('/', async (req, res) => {
 
 router.get('/user', async (req, res) => {
     try {
-        const bots = await getManagableGuilds(req.query.key?.toString());
+        const authUser: AuthUser = AuthClient.getUser(req.query.key);
+        const bots = await getManagableGuilds(authUser.id);
         res.json(bots);
     } catch (error) { sendError(res, 400, error); }
 });
