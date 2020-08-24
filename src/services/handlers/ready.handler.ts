@@ -4,11 +4,14 @@ import { bot } from '../../bot';
 import config from '../../../config.json';
 import CommandService from '../command.service';
 import Deps from '../../utils/deps';
+import { API } from '../../api/server';
 
 export default class ReadyHandler implements EventHandler {
     on = 'ready';
 
-    constructor(private commandService = Deps.get<CommandService>(CommandService)) {}
+    constructor(
+        private commandService = Deps.get<CommandService>(CommandService),
+        private api = Deps.get<API>(API)) {}
 
     async invoke() {        
         Log.info(`Bot is live!`, `events`);
@@ -22,5 +25,6 @@ export default class ReadyHandler implements EventHandler {
         });
         
         await this.commandService.init();
+        await this.api.initSitemaps();
     }
 }

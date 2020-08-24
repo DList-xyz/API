@@ -15,12 +15,18 @@ import { router as manageBotRoutes } from './routes/guilds/manage-guilds-routes'
 import { router as reviewerRoutes } from './routes/guilds/reviewer-routes';
 import { router as statsRoutes } from './routes/guilds/stats-routes';
 import { router as userRoutes } from './routes/user-routes';
+import SitemapGenerator from './modules/sitemap-generator';
 
 export const app = express(),
              AuthClient = new OAuthClient(config.bot.id, config.bot.secret);
 
 export class API {
-    constructor(private stats = Deps.get<Stats>(Stats)) {        
+    rootMap = '';
+    guildsMap = '';
+
+    constructor(
+        private sitemapGenerator = Deps.get<SitemapGenerator>(SitemapGenerator),
+        private stats = Deps.get<Stats>(Stats)) {        
         AuthClient.setRedirect(`${config.api.url}/auth`);
         AuthClient.setScopes('identify', 'guilds');
 
@@ -32,6 +38,11 @@ export class API {
         app.use('/api/v1/guilds', guildsRoutes, manageBotRoutes);
         app.use('/api/v1/guilds/:id', reviewerRoutes, statsRoutes);
         app.use('/api/v1', apiRoutes);
+
+        app.get('/sitemaps/root.xml', (req, res) =>
+            res.set('Content-Type', 'text/xml').send(this.rootMap));
+        app.get('/sitemaps/guilds.xml', (req, res) =>
+            res.set('Content-Type', 'text/xml').send(this.guildsMap));
   
         app.use(express.static(join(__dirname, '../../dist/dashboard')));
         
@@ -42,5 +53,10 @@ export class API {
         app.listen(port, () => Log.info(`API is live on port ${port}`));
         
         this.stats.init();
+    }
+
+    async initSitemaps() {
+        this.rootMap = this.sitemapGenerator.getRootMap();
+        this.guildsMap = await this.sitemapGenerator.getGuildsMap();
     }
 }
