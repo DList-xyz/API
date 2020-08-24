@@ -1,4 +1,0 @@
-user-agent: *
-allow: /
-
-sitemap: https://dlist.xyz/sitemap.xml
