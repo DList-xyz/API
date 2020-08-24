@@ -34,15 +34,16 @@ export class API {
         app.use(cors());
         app.use(bodyParser.json());
 
-        app.use('/api/v1/user', userRoutes);
-        app.use('/api/v1/guilds', guildsRoutes, manageBotRoutes);
-        app.use('/api/v1/guilds/:id', reviewerRoutes, statsRoutes);
-        app.use('/api/v1', apiRoutes);
 
         app.get('/api/v1/sitemaps/root.xml', (req, res) =>
             res.set('Content-Type', 'text/xml').send(this.rootMap));
         app.get('/api/v1/sitemaps/guilds.xml', (req, res) =>
             res.set('Content-Type', 'text/xml').send(this.guildsMap));
+            
+        app.use('/api/v1/user', userRoutes);
+        app.use('/api/v1/guilds', guildsRoutes, manageBotRoutes);
+        app.use('/api/v1/guilds/:id', reviewerRoutes, statsRoutes);
+        app.use('/api/v1', apiRoutes);
   
         app.use(express.static(join(__dirname, '../../dist/dashboard')));
         
