@@ -39,9 +39,9 @@ export class API {
         app.use('/api/v1/guilds/:id', reviewerRoutes, statsRoutes);
         app.use('/api/v1', apiRoutes);
 
-        app.get('/sitemaps/root.xml', (req, res) =>
+        app.get('/api/v1/sitemaps/root.xml', (req, res) =>
             res.set('Content-Type', 'text/xml').send(this.rootMap));
-        app.get('/sitemaps/guilds.xml', (req, res) =>
+        app.get('/api/v1/sitemaps/guilds.xml', (req, res) =>
             res.set('Content-Type', 'text/xml').send(this.guildsMap));
   
         app.use(express.static(join(__dirname, '../../dist/dashboard')));
