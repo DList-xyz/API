@@ -21,8 +21,8 @@ export const app = express(),
              AuthClient = new OAuthClient(config.bot.id, config.bot.secret);
 
 export class API {
-    rootMap = '';
-    guildsMap = '';
+    rootSitemap = '';
+    guildsSitemap = '';
 
     constructor(
         private sitemapGenerator = Deps.get<SitemapGenerator>(SitemapGenerator),
@@ -34,19 +34,18 @@ export class API {
         app.use(cors());
         app.use(bodyParser.json());
 
-
         app.get('/api/v1/sitemaps/root.xml', (req, res) =>
-            res.set('Content-Type', 'text/xml').send(this.rootMap));
+            res.set('Content-Type', 'text/xml').send(this.rootSitemap));
         app.get('/api/v1/sitemaps/guilds.xml', (req, res) =>
-            res.set('Content-Type', 'text/xml').send(this.guildsMap));
+            res.set('Content-Type', 'text/xml').send(this.guildsSitemap));
             
         app.use('/api/v1/user', userRoutes);
         app.use('/api/v1/guilds', guildsRoutes, manageBotRoutes);
         app.use('/api/v1/guilds/:id', reviewerRoutes, statsRoutes);
         app.use('/api/v1', apiRoutes);
-  
-        app.use(express.static(join(__dirname, '../../dist/dashboard')));
         
+        // uncomment if you are using Glitch or client-side rendering
+        app.use(express.static(join(__dirname, '../../dist/dashboard')));
         app.all('*', (req, res) => res.status(200).sendFile(
             join(__dirname, '../../dist/dashboard/index.html')));
 
@@ -57,7 +56,7 @@ export class API {
     }
 
     async initSitemaps() {
-        this.rootMap = this.sitemapGenerator.getRootMap();
-        this.guildsMap = await this.sitemapGenerator.getGuildsMap();
+        this.rootSitemap = this.sitemapGenerator.getRootMap();
+        this.guildsSitemap = await this.sitemapGenerator.getGuildsMap();
     }
 }
