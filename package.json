@@ -8,7 +8,7 @@
     "test:u": "ts-mocha tests/unit/*.tests.ts",
     "test:i": "ts-mocha tests/integration/*.tests.ts",
     "start": "ts-node src/bot.ts",
-    "start:dev": "ts-node-dev src/bot.ts"
+    "dev": "ts-node-dev src/bot.ts"
   },
   "keywords": [],
   "author": "ADAMJR#0001",
